@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOV-PORTAL | Información Clasificada</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page-confidential">
+
+  <div class="edu-banner">
+    ⚠️ LABORATORIO EDUCATIVO — El campo de comentarios es VULNERABLE a HTML Injection intencionalmente.
+  </div>
+
+  <!-- Barra de navegación -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span class="logo-icon">🦅</span>
+      <span class="logo-text">GOV·PORTAL</span>
+      <span class="nav-section-label">// INFORMACIÓN CLASIFICADA</span>
+    </div>
+    <div class="nav-user">
+      <span class="user-badge" id="nav-user-info">Cargando...</span>
+      <button class="btn-logout" onclick="doLogout()">
+        <span>🚪</span> Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <div class="conf-layout">
+
+    <!-- ── SECCIÓN 1: Documentos Clasificados ─────────────────────────── -->
+    <section class="conf-section">
+      <div class="section-header">
+        <div class="section-label-row">
+          <span class="section-badge badge-red">TOP SECRET</span>
+          <span class="section-label">DOCUMENTOS CLASIFICADOS</span>
+        </div>
+        <h2>Archivos de Inteligencia</h2>
+        <p class="section-desc">Registros confidenciales del sistema. Solo personal con autorización NIVEL 5 puede acceder.</p>
+      </div>
+
+      <div id="documentos-container" class="docs-grid">
+        <div class="loading-state">
+          <span class="spinner">⏳</span>
+          Cargando documentos clasificados...
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SECCIÓN 2: Bitácora / Comentarios (HTML Injection) ─────────── -->
+    <section class="conf-section vuln-section">
+      <div class="section-header">
+        <div class="section-label-row">
+          <span class="section-badge badge-orange">VULNERABLE</span>
+          <span class="section-label">BITÁCORA DE OPERACIONES</span>
+        </div>
+        <h2>Registro de Comentarios</h2>
+        <p class="section-desc vuln-desc">
+          ⚡ <strong>HTML Injection activa:</strong> El contenido se renderiza como HTML sin ninguna sanitización.
+          Puedes insertar cualquier etiqueta HTML, incluyendo imágenes, videos, iframes y formularios.
+        </p>
+      </div>
+
+      <!-- Formulario de nuevo comentario -->
+      <div class="comment-form-card">
+        <h3>📝 Nuevo Registro en Bitácora</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="comment-autor">Autor / Identificador</label>
+            <input
+              type="text"
+              id="comment-autor"
+              placeholder="Ej: Agent47, Director, o <b>HTML aquí</b>"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="comment-content">
+            Contenido HTML
+            <span class="label-badge">Sin sanitización</span>
+          </label>
+          <textarea
+            id="comment-content"
+            rows="6"
+            placeholder="Ingresa texto o etiquetas HTML...&#10;&#10;Ejemplos:&#10;<h1>Título inyectado</h1>&#10;<img src='https://picsum.photos/300/150' />&#10;<marquee>Texto animado</marquee>"
+          ></textarea>
+          <span class="field-hint">
+            El contenido se insertará directamente como <code>innerHTML</code> — sin escape ni sanitización.
+          </span>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitComment()">
+            <span>💾</span> Guardar en Bitácora
+          </button>
+          <button class="btn-secondary" onclick="loadPayloadExample()">
+            <span>⚡</span> Cargar ejemplo de inyección
+          </button>
+        </div>
+        <div id="comment-feedback" class="feedback hidden"></div>
+      </div>
+
+      <!-- Ayuda de payloads de ejemplo -->
+      <div class="payload-helper" id="payload-helper" style="display:none">
+        <h4>🧪 Payloads de Ejemplo</h4>
+        <div class="payload-grid">
+          <button class="payload-btn" onclick="insertPayload('h1')">H1 + Estilos</button>
+          <button class="payload-btn" onclick="insertPayload('img')">Imagen</button>
+          <button class="payload-btn" onclick="insertPayload('video')">Video</button>
+          <button class="payload-btn" onclick="insertPayload('iframe')">iFrame</button>
+          <button class="payload-btn" onclick="insertPayload('form')">Formulario</button>
+          <button class="payload-btn" onclick="insertPayload('table')">Tabla HTML</button>
+        </div>
+      </div>
+
+      <!-- Lista de comentarios -->
+      <div class="comments-list" id="comments-container">
+        <div class="loading-state">
+          <span class="spinner">⏳</span>
+          Cargando bitácora...
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    <p>
+      🎓 Laboratorio de Ciberseguridad &nbsp;|&nbsp;
+      Vulnerabilidades demostradas: SQL Injection · HTML Injection
+    </p>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

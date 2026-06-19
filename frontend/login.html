@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOV-PORTAL | Autenticación</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page-login">
+
+  <div class="edu-banner">
+    ⚠️ LABORATORIO EDUCATIVO — Este formulario es VULNERABLE a SQL Injection intencionalmente.
+  </div>
+
+  <div class="login-layout">
+
+    <!-- Panel izquierdo -->
+    <div class="login-sidebar">
+      <a href="/" class="sidebar-logo">
+        <span class="logo-icon">🦅</span>
+        <span class="logo-text">GOV·PORTAL</span>
+      </a>
+      <div class="sidebar-info">
+        <h2>Acceso Restringido</h2>
+        <p>Solo personal autorizado con credenciales vigentes puede acceder al sistema de documentos clasificados.</p>
+        <div class="sidebar-vuln-note">
+          <h3>⚡ Nota Educativa</h3>
+          <p>El formulario de login es vulnerable a <strong>SQL Injection</strong>. La consulta SQL se construye por concatenación directa de strings.</p>
+          <code>SELECT * FROM usuarios<br/>WHERE username = '<span class="inject">ENTRADA</span>'<br/>AND password = '<span class="inject">ENTRADA</span>'</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel derecho: formulario -->
+    <div class="login-main">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="header-badge">
+            <span>🔒</span>
+          </div>
+          <h1>Autenticación</h1>
+          <p>Ingrese sus credenciales de agente</p>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Usuario</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Ej: admin"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="field-hint">Prueba: <code>admin' --</code></span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="••••••••"
+            autocomplete="off"
+          />
+          <span class="field-hint">Con SQL Injection, puede ser cualquier valor</span>
+        </div>
+
+        <button class="btn-primary btn-full" id="btn-login" onclick="doLogin()">
+          <span class="btn-icon">🔓</span>
+          AUTENTICAR
+        </button>
+
+        <div id="login-feedback" class="feedback hidden"></div>
+
+        <!-- Panel de depuración SQL -->
+        <div id="sql-debug" class="sql-debug hidden">
+          <div class="sql-debug-header">
+            <span>🔍 Query SQL ejecutada (debug educativo)</span>
+          </div>
+          <pre id="sql-query-text"></pre>
+        </div>
+      </div>
+
+      <!-- Credenciales de prueba -->
+      <div class="creds-hint">
+        <h4>👤 Credenciales de prueba (sin inyección)</h4>
+        <table class="creds-table">
+          <thead>
+            <tr><th>Usuario</th><th>Contraseña</th><th>Rol</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>admin</code></td><td><code>admin123</code></td><td>superadmin</td></tr>
+            <tr><td><code>agent47</code></td><td><code>s3cr3t_007</code></td><td>agente</td></tr>
+            <tr><td><code>director</code></td><td><code>G0v2024!</code></td><td>director</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
