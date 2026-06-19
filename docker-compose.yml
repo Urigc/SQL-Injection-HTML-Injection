@@ -1,0 +1,65 @@
+# ============================================================
+#  docker-compose.yml — GOV-PORTAL Laboratorio Educativo
+#  Servicios: web (Flask) + db (PostgreSQL)
+#  ADVERTENCIA: Solo para uso local y aislado.
+# ============================================================
+
+services:
+
+  # ── Base de datos PostgreSQL ──────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: govportal_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB}
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro,z
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5437:5437"          # Expuesto localmente para inspección con psql/pgAdmin
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - govnet
+
+  # ── Backend Flask ─────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: govportal_web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST:     db
+      POSTGRES_PORT:     ${POSTGRES_PORT}
+      POSTGRES_DB:       ${POSTGRES_DB}
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      FLASK_HOST:        ${FLASK_HOST}
+      FLASK_PORT:        ${FLASK_PORT}
+      FLASK_ENV:         ${FLASK_ENV}
+      FLASK_SECRET_KEY:  ${FLASK_SECRET_KEY}
+    ports:
+      - "5000:5000"          # Acceso desde http://localhost:5000
+    networks:
+      - govnet
+
+# ── Volúmenes ─────────────────────────────────────────────────
+volumes:
+  pgdata:
+    name: govportal_pgdata
+
+# ── Redes ──────────────────────────────────────────────────────
+networks:
+  govnet:
+    name: govportal_net
+    driver: bridge
